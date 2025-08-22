@@ -3,7 +3,8 @@ name: Auto Renewal Bot
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 3 */4 * *'
+    # 每两天 3 点自动触发
+    - cron: '0 3 */2 * *'
 
 jobs:
   run-renewal:
