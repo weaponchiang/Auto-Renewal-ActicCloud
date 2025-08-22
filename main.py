@@ -181,7 +181,7 @@ def main():
         end_time_str = datetime.now(beijing_tz).strftime('%Y-%m-%d %H:%M:%S')
         duration = round(end_time - start_time)
         timing_info = f"\n\n*结束时间:* `{end_time_str}`\n*总耗时:* `{duration} 秒`"
-        schedule_info = "\n*任务计划:* `每4天自动运行一次`"
+        schedule_info = "\n*任务计划:* `每2天自动运行一次`"
 
         if not final_report:
             final_report = "🤔 *任务意外结束，未生成报告*"
