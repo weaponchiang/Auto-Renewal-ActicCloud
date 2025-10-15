@@ -187,7 +187,7 @@ def main():
             final_report = "🤔 *任务意外结束，未生成报告*"
 
         final_report += timing_info + schedule_info
-        final_report += "\n\n`你真是个天才  -buwen`"
+        final_report += "\n\n`你真是个天才!  --buwen`"
         send_telegram_message(tg_config, final_report)
         logger.info("=" * 10 + " 自动续期任务结束 " + "=" * 10)
 
