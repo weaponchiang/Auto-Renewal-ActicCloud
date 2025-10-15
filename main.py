@@ -181,13 +181,13 @@ def main():
         end_time_str = datetime.now(beijing_tz).strftime('%Y-%m-%d %H:%M:%S')
         duration = round(end_time - start_time)
         timing_info = f"\n\n*结束时间:* `{end_time_str}`\n*总耗时:* `{duration} 秒`"
-        schedule_info = "\n*任务计划:* `每2天自动运行一次`"
+        schedule_info = "\n*任务计划:* `每4天自动运行一次`"
 
         if not final_report:
             final_report = "🤔 *任务意外结束，未生成报告*"
 
         final_report += timing_info + schedule_info
-        final_report += "\n\n`我要告诉熊老板你开挂！--by  XHG`"
+        final_report += "\n\n`你真是个天才  -buwen`"
         send_telegram_message(tg_config, final_report)
         logger.info("=" * 10 + " 自动续期任务结束 " + "=" * 10)
 
