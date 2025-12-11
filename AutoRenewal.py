@@ -76,12 +76,29 @@ def renew_product(pid):
     return {'success': success, 'before': before, 'after': after, 'changed': before != after}
 
 
+
+
+
 def update_workflow_cron(latest_expiry_date):
+    """更新 workflow 文件中的 cron 表达式"""
     try:
-        expiry = datetime.strptime(latest_expiry_date, "%Y-%m-%d")
-        days_until_expiry = (expiry - datetime.now()).days
-        interval = max(1, days_until_expiry // 3)
-        random_hour = random.randint(0, 23)
+        if not latest_expiry_date:
+            expiry = datetime.now() + timedelta(days=7)
+            days_until_expiry = 7
+        else:
+            expiry = datetime.strptime(latest_expiry_date, "%Y-%m-%d")
+            days_until_expiry = (expiry - datetime.now()).days
+        
+        # 计算运行间隔
+        if days_until_expiry <= 3:
+            interval = 1
+        elif days_until_expiry <= 7:
+            interval = 2
+        else:
+            interval = max(1, min(7, days_until_expiry // 4))
+        
+        # 生成随机时间
+        random_hour = random.randint(6, 22)
         random_minute = random.randint(0, 59)
         new_cron = f"{random_minute} {random_hour} */{interval} * *"
         
@@ -95,6 +112,7 @@ def update_workflow_cron(latest_expiry_date):
         log(f"   运行间隔: 每 {interval} 天")
         log(f"   下次运行: {next_run_beijing.strftime('%Y-%m-%d %H:%M')} (北京时间)")
         
+        # 更新 workflow 文件
         workflow_path = '.github/workflows/auto-renewal.yml'
         with open(workflow_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -150,7 +168,6 @@ def main():
     log(f"总耗时: {duration} 秒")
     log(f"📊 统计: 成功 {success_count}, 失败 {fail_count}")
     
-    # 发送 Telegram 通知
     send_telegram("\n".join(log_messages))
 
 
