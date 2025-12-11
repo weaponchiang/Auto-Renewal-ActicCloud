@@ -1,0 +1,52 @@
+name: ArcticCloud Auto Renewal
+
+on:
+  schedule:
+    # 每4天运行，但使用不规则的时间点（分钟和小时随机）
+    # 这样看起来不像固定的自动化脚本
+    - cron: '25 20 */2 * *'   # 每4天的 09:37 UTC (北京时间 17:37)
+  
+  # 允许手动触发
+  workflow_dispatch:
+
+jobs:
+  renew:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 允许提交代码
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v3
+    
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+    
+    - name: 运行续期脚本
+      env:
+        CONFIG: ${{ secrets.CONFIG }}
+      run: python AutoRenewal.py
+    
+    - name: 提交 workflow 更新
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add .github/workflows/auto-renewal.yml
+        git diff --staged --quiet || git commit -m "🤖 自动更新运行计划 [skip ci]"
+        git push
+    
+    - name: 上传日志
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: renewal-log
+        path: |
+          *.log
+        retention-days: 30
