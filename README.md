@@ -39,8 +39,10 @@
 1. 访问 GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
 2. 点击 "Generate new token" → "Generate new token (classic)"
 3. 设置 Token 名称，选择过期时间
-4. 勾选权限：`repo` (Full control of private repositories)
-5. 点击 "Generate token"，复制生成的 token
+4. 勾选权限：
+   - `repo` (Full control of private repositories)
+   - `workflow` (Update GitHub Action workflows)
+5. 点击 "Generate token"，复制生成的 token (形如 `ghp_xxx`)
 6. 将 token 粘贴到 Secret 的值中
 
 ## 使用

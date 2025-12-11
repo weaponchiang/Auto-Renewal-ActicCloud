@@ -27,17 +27,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install requests
     
+    - name: 检查 PAT 配置
+      run: |
+        if [ -z "${{ secrets.PAT }}" ]; then
+          echo "❌ 错误: PAT 未配置"
+          echo "请在 Settings → Secrets and variables → Actions 中添加 PAT"
+          exit 1
+        else
+          echo "✅ PAT 已配置"
+        fi
+    
     - name: 运行续期脚本
       env:
         CONFIG: ${{ secrets.CONFIG }}
       run: python AutoRenewal.py
     
     - name: 提交 workflow 更新
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
+        git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
         git add .github/workflows/auto-renewal.yml
         git diff --staged --quiet || git commit -m "🤖 自动更新运行计划 [skip ci]"
         git push
