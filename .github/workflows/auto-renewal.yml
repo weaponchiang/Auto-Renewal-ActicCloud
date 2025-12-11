@@ -11,11 +11,13 @@ jobs:
   renew:
     runs-on: ubuntu-latest
     permissions:
-      contents: write    # 需要提交 next_run.json 文件
+      contents: write
     
     steps:
     - name: 检出代码
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PAT }}
     
     - name: 设置 Python 环境
       uses: actions/setup-python@v5
@@ -46,7 +48,6 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git remote set-url origin https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
         git add .github/workflows/auto-renewal.yml
         git diff --staged --quiet || git commit -m "🤖 自动更新运行计划 [skip ci]"
         git push
