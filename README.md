@@ -13,8 +13,9 @@
 
 ## 配置
 
-在 GitHub 仓库 → Settings → Secrets and variables → Actions 添加一个 Secret：
+在 GitHub 仓库 → Settings → Secrets and variables → Actions 添加以下 Secrets：
 
+### 1. CONFIG
 **名称**: `CONFIG`
 
 **值** (JSON格式):
@@ -30,6 +31,17 @@
 ```
 
 不需要 Telegram 通知的话，把 `telegram_bot_token` 和 `telegram_chat_id` 留空字符串 `""`。
+
+### 2. PAT (Personal Access Token)
+**名称**: `PAT`
+
+**获取方法**:
+1. 访问 GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. 点击 "Generate new token" → "Generate new token (classic)"
+3. 设置 Token 名称，选择过期时间
+4. 勾选权限：`repo` (Full control of private repositories)
+5. 点击 "Generate token"，复制生成的 token
+6. 将 token 粘贴到 Secret 的值中
 
 ## 使用
 
