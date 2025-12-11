@@ -5,171 +5,154 @@ import time
 import random
 import os
 from datetime import datetime, timedelta
+import base64
 
-# 加载配置（优先从环境变量读取，用于 GitHub Actions）
-def load_config():
+def _0x1a2b():
     if os.environ.get('CONFIG'):
         return json.loads(os.environ.get('CONFIG'))
     with open('config.json', 'r', encoding='utf-8') as f:
         return json.load(f)
 
-config = load_config()
-BASE_URL = "https://vps.polarbear.nyc.mn"
-session = requests.Session()
-session.headers.update({
+_0x3c4d = _0x1a2b()
+_0x5e6f = base64.b64decode('aHR0cHM6Ly92cHMucG9sYXJiZWFyLm55Yy5tbg==').decode()
+_0x7g8h = requests.Session()
+_0x7g8h.headers.update({
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140.0.0.0 Safari/537.36",
     "Accept-Language": "zh-CN,zh;q=0.9",
 })
 
-# 收集日志用于 Telegram 推送
-log_messages = []
+_0x9i0j = []
 
 def log(msg):
     print(msg)
-    log_messages.append(msg)
+    _0x9i0j.append(msg)
 
-
-def send_telegram(message):
-    """发送 Telegram 通知"""
-    token = config.get('telegram_bot_token', '')
-    chat_id = config.get('telegram_chat_id', '')
-    if not token or not chat_id:
+def _0x1k2l(message):
+    _0xa = _0x3c4d.get('telegram_bot_token', '')
+    _0xb = _0x3c4d.get('telegram_chat_id', '')
+    if not _0xa or not _0xb:
         return
     try:
         requests.post(
-            f"https://api.telegram.org/bot{token}/sendMessage",
-            data={"chat_id": chat_id, "text": message, "parse_mode": "HTML"},
+            f"https://api.telegram.org/bot{_0xa}/sendMessage",
+            data={"chat_id": _0xb, "text": message, "parse_mode": "HTML"},
             timeout=10
         )
     except:
         pass
 
-
-def login():
-    session.get(f"{BASE_URL}/index/login/?referer=", timeout=10)
-    r = session.post(
-        f"{BASE_URL}/index/login/?referer=",
-        data={"swapname": config['username'], "swappass": config['password']},
-        headers={"Origin": BASE_URL, "Referer": f"{BASE_URL}/index/login/?referer="},
+def _0x3m4n():
+    _0x7g8h.get(f"{_0x5e6f}{base64.b64decode('L2luZGV4L2xvZ2luLz9yZWZlcmVyPQ==').decode()}", timeout=10)
+    _0xc = _0x7g8h.post(
+        f"{_0x5e6f}{base64.b64decode('L2luZGV4L2xvZ2luLz9yZWZlcmVyPQ==').decode()}",
+        data={"swapname": _0x3c4d['username'], "swappass": _0x3c4d['password']},
+        headers={"Origin": _0x5e6f, "Referer": f"{_0x5e6f}{base64.b64decode('L2luZGV4L2xvZ2luLz9yZWZlcmVyPQ==').decode()}"},
         timeout=10, allow_redirects=True
     )
-    return "success=" in r.url or any(x in r.text for x in ["登陆成功", "欢迎回来", "控制面板"])
+    return "success=" in _0xc.url or any(x in _0xc.text for x in [base64.b64decode('55m75pmG5oiQ5Yqf').decode(), base64.b64decode('5qyi6L+O5Zue5p2l').decode(), base64.b64decode('5o6n5Yi26Z2i5p2/').decode()])
 
-
-def get_expiry_date(pid):
-    r = session.get(f"{BASE_URL}/control/detail/{pid}/", timeout=10)
-    m = re.search(r"到期时间</th>\s*<td>\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*</td>", r.text)
-    if not m:
+def _0x5o6p(_0xd):
+    _0xe = _0x7g8h.get(f"{_0x5e6f}{base64.b64decode('L2NvbnRyb2wvZGV0YWlsLw==').decode()}{_0xd}/", timeout=10)
+    _0xf = re.search(base64.b64decode('5Yiw5pyf5pe26Ze0PC90aD5ccyo8dGQ+XHMqKFswLTldezR9LVswLTldezJ9LVswLTldezJ9KVxzKjwvdGQ+').decode(), _0xe.text)
+    if not _0xf:
         raise RuntimeError("无法解析到期时间")
-    return m.group(1).strip()
+    return _0xf.group(1).strip()
 
-
-def renew_product(pid):
-    before = get_expiry_date(pid)
-    r = session.post(
-        f"{BASE_URL}/control/detail/{pid}/pay/", data={},
-        headers={"Origin": BASE_URL, "Referer": f"{BASE_URL}/control/detail/{pid}/"},
+def _0x7q8r(_0xd):
+    _0x10 = _0x5o6p(_0xd)
+    _0x11 = _0x7g8h.post(
+        f"{_0x5e6f}{base64.b64decode('L2NvbnRyb2wvZGV0YWlsLw==').decode()}{_0xd}{base64.b64decode('L3BheS8=').decode()}", data={},
+        headers={"Origin": _0x5e6f, "Referer": f"{_0x5e6f}{base64.b64decode('L2NvbnRyb2wvZGV0YWlsLw==').decode()}{_0xd}/"},
         timeout=10, allow_redirects=True
     )
-    after = get_expiry_date(pid)
-    success = "success=" in r.url or "免费产品已经帮您续期" in r.text
-    return {'success': success, 'before': before, 'after': after, 'changed': before != after}
+    _0x12 = _0x5o6p(_0xd)
+    _0x13 = "success=" in _0x11.url or base64.b64decode('5YWN6LS55Lqn5ZOB5bey57uP5biu5oKo57ut5pyf').decode() in _0x11.text
+    return {'success': _0x13, 'before': _0x10, 'after': _0x12, 'changed': _0x10 != _0x12}
 
-
-
-
-
-def update_workflow_cron(latest_expiry_date):
-    """更新 workflow 文件中的 cron 表达式"""
+def _0x9s0t(_0x14):
     try:
-        if not latest_expiry_date:
-            expiry = datetime.now() + timedelta(days=7)
-            days_until_expiry = 7
+        if not _0x14:
+            _0x15 = datetime.now() + timedelta(days=7)
+            _0x16 = 7
         else:
-            expiry = datetime.strptime(latest_expiry_date, "%Y-%m-%d")
-            days_until_expiry = (expiry - datetime.now()).days
+            _0x15 = datetime.strptime(_0x14, "%Y-%m-%d")
+            _0x16 = (_0x15 - datetime.now()).days
         
-        # 计算运行间隔
-        if days_until_expiry <= 3:
-            interval = 1
-        elif days_until_expiry <= 7:
-            interval = 2
+        if _0x16 <= 3:
+            _0x17 = 1
+        elif _0x16 <= 7:
+            _0x17 = 2
         else:
-            interval = max(1, min(7, days_until_expiry // 4))
+            _0x17 = max(1, min(7, _0x16 // 4))
         
-        # 生成随机时间
-        random_hour = random.randint(6, 22)
-        random_minute = random.randint(0, 59)
-        new_cron = f"{random_minute} {random_hour} */{interval} * *"
+        _0x18 = random.randint(6, 22)
+        _0x19 = random.randint(0, 59)
+        _0x1a = f"{_0x19} {_0x18} */{_0x17} * *"
         
-        # 计算下次运行时间（UTC 转北京时间 +8）
-        next_run_utc = datetime.now() + timedelta(days=interval)
-        next_run_utc = next_run_utc.replace(hour=random_hour, minute=random_minute, second=0)
-        next_run_beijing = next_run_utc + timedelta(hours=8)
+        _0x1b = datetime.now() + timedelta(days=_0x17)
+        _0x1b = _0x1b.replace(hour=_0x18, minute=_0x19, second=0)
+        _0x1c = _0x1b + timedelta(hours=8)
         
         log(f"\n📅 更新运行计划:")
-        log(f"   到期日期: {latest_expiry_date}, 剩余 {days_until_expiry} 天")
-        log(f"   运行间隔: 每 {interval} 天")
-        log(f"   下次运行: {next_run_beijing.strftime('%Y-%m-%d %H:%M')} (北京时间)")
+        log(f"   到期日期: {_0x14}, 剩余 {_0x16} 天")
+        log(f"   运行间隔: 每 {_0x17} 天")
+        log(f"   下次运行: {_0x1c.strftime('%Y-%m-%d %H:%M')} (北京时间)")
         
-        # 更新 workflow 文件
-        workflow_path = '.github/workflows/auto-renewal.yml'
-        with open(workflow_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        new_content = re.sub(r"- cron: '[^']*'", f"- cron: '{new_cron}'", content, count=1)
-        with open(workflow_path, 'w', encoding='utf-8') as f:
-            f.write(new_content)
+        _0x1d = '.github/workflows/auto-renewal.yml'
+        with open(_0x1d, 'r', encoding='utf-8') as f:
+            _0x1e = f.read()
+        _0x1f = re.sub(r"- cron: '[^']*'", f"- cron: '{_0x1a}'", _0x1e, count=1)
+        with open(_0x1d, 'w', encoding='utf-8') as f:
+            f.write(_0x1f)
         log(f"   ✅ Workflow 已更新")
         return True
     except Exception as e:
         log(f"   ⚠️ 更新失败: {e}")
         return False
 
-
 def main():
-    start = datetime.now()
+    _0x20 = datetime.now()
     log(f"🚀 ArcticCloud续期任务启动")
-    log(f"开始时间: {start.strftime('%Y-%m-%d %H:%M:%S')}\n")
+    log(f"开始时间: {_0x20.strftime('%Y-%m-%d %H:%M:%S')}\n")
     
-    if not login():
+    if not _0x3m4n():
         log("❌ 登录失败")
-        send_telegram("\n".join(log_messages))
+        _0x1k2l("\n".join(_0x9i0j))
         return
     
-    success_count = fail_count = 0
-    latest_expiry = None
+    _0x21 = _0x22 = 0
+    _0x23 = None
     
-    for pid in config['product_ids']:
+    for _0x24 in _0x3c4d['product_ids']:
         try:
-            r = renew_product(pid)
-            if r['success']:
-                msg = f"从 {r['before']} 到 {r['after']}" if r['changed'] else f"到期: {r['after']}, 已达最大续期"
-                log(f"✅ 产品 {pid} 续费成功 ({msg})")
-                success_count += 1
-                if not latest_expiry or r['after'] < latest_expiry:
-                    latest_expiry = r['after']
+            _0x25 = _0x7q8r(_0x24)
+            if _0x25['success']:
+                _0x26 = f"从 {_0x25['before']} 到 {_0x25['after']}" if _0x25['changed'] else f"到期: {_0x25['after']}, 已达最大续期"
+                log(f"✅ 产品 {_0x24} 续费成功 ({_0x26})")
+                _0x21 += 1
+                if not _0x23 or _0x25['after'] < _0x23:
+                    _0x23 = _0x25['after']
             else:
-                log(f"⚠️ 产品 {pid} 续费未生效 (到期: {r['before']})")
-                log(f"   手动: {BASE_URL}/control/detail/{pid}/")
-                fail_count += 1
+                log(f"⚠️ 产品 {_0x24} 续费未生效 (到期: {_0x25['before']})")
+                log(f"   手动: {_0x5e6f}{base64.b64decode('L2NvbnRyb2wvZGV0YWlsLw==').decode()}{_0x24}/")
+                _0x22 += 1
         except Exception as e:
-            log(f"❌ 产品 {pid} 失败: {e}")
-            log(f"   手动: {BASE_URL}/control/detail/{pid}/")
-            fail_count += 1
+            log(f"❌ 产品 {_0x24} 失败: {e}")
+            log(f"   手动: {_0x5e6f}{base64.b64decode('L2NvbnRyb2wvZGV0YWlsLw==').decode()}{_0x24}/")
+            _0x22 += 1
         
-        if len(config['product_ids']) > 1 and pid != config['product_ids'][-1]:
+        if len(_0x3c4d['product_ids']) > 1 and _0x24 != _0x3c4d['product_ids'][-1]:
             time.sleep(2)
     
-    if latest_expiry:
-        update_workflow_cron(latest_expiry)
+    if _0x23:
+        _0x9s0t(_0x23)
     
-    duration = int((datetime.now() - start).total_seconds())
+    _0x27 = int((datetime.now() - _0x20).total_seconds())
     log(f"\n结束时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    log(f"总耗时: {duration} 秒")
-    log(f"📊 统计: 成功 {success_count}, 失败 {fail_count}")
+    log(f"总耗时: {_0x27} 秒")
+    log(f"📊 统计: 成功 {_0x21}, 失败 {_0x22}")
     
-    send_telegram("\n".join(log_messages))
-
+    _0x1k2l("\n".join(_0x9i0j))
 
 if __name__ == "__main__":
     main()
